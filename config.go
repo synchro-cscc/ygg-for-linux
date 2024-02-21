@@ -37,32 +37,29 @@ type KeyResult struct {
 
 
 
-// returnKeysWrapper 関数を実装
+
 func returnKeysWrapper() KeyResult {
-        // 実行可能ファイルを起動して標準出力をキャプチャ
+
         cmd := exec.Command("./realmain")
         output,err := cmd.CombinedOutput()
-//./relamainでreturn 1 の場合は、panic(err)?
+
 
         if err != nil {
     fmt.Printf("Error: %v\n", err)
 }
-// キーを設定
-	key := byte(0x3F) // 適当なキーを設定
 
-	// もとに戻すために再度xorをかける
+	key := byte(0x3F)
+
 	for i := 0; i < len(output); i++ {
 		output[i] = output[i] ^ key
 	}
 //fmt.Println("Decrypted data:", string(output[:len(output)-1]))
 
-	// もとに戻ったデータを表示
 
-// 公開鍵と秘密鍵の長さを指定
+
 	publicKeyLength := 64
 	privateKeyLength := 128
 
-	// 公開鍵と秘密鍵を分割
 	publicKey := output[:publicKeyLength]
 	privateKey := output[publicKeyLength+1 : publicKeyLength+privateKeyLength+1]
 
@@ -82,10 +79,10 @@ func returnKeysWrapper() KeyResult {
 // signing keypair. The signing keys are used by the switch to derive the
 // structure of the spanning tree.
 func (cfg *NodeConfig) NewKeys() {
- // C言語の関数からキーを取得
+
         keyResult := returnKeysWrapper()
 
-        // 取得したキーをcfgにセット
+
         cfg.PublicKey = keyResult.PublicKey
         cfg.PrivateKey = keyResult.PrivateKey
 
